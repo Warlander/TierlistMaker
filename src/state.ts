@@ -118,6 +118,39 @@ export function moveItemToTier(itemId: string, tierId: string): void {
   };
 }
 
+export function renameItem(id: string, name: string): void {
+  appState = {
+    ...appState,
+    tiers: appState.tiers.map(t => ({
+      ...t,
+      items: t.items.map(it => it.id === id ? { ...it, name } : it),
+    })),
+    unranked: appState.unranked.map(it => it.id === id ? { ...it, name } : it),
+  };
+}
+
+export function changeItemImage(id: string, imageDataUrl: string): void {
+  appState = {
+    ...appState,
+    tiers: appState.tiers.map(t => ({
+      ...t,
+      items: t.items.map(it => it.id === id ? { ...it, type: 'image' as const, imageDataUrl } : it),
+    })),
+    unranked: appState.unranked.map(it => it.id === id ? { ...it, type: 'image' as const, imageDataUrl } : it),
+  };
+}
+
+export function removeItemImage(id: string): void {
+  appState = {
+    ...appState,
+    tiers: appState.tiers.map(t => ({
+      ...t,
+      items: t.items.map(it => it.id === id ? { ...it, type: 'text' as const, imageDataUrl: undefined } : it),
+    })),
+    unranked: appState.unranked.map(it => it.id === id ? { ...it, type: 'text' as const, imageDataUrl: undefined } : it),
+  };
+}
+
 export function moveItemToUnranked(itemId: string): void {
   const result = removeItemFromState(itemId);
   if (!result) return;

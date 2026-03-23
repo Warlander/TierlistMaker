@@ -131,9 +131,10 @@ Use this to track completion. Only check off items when the feature is fully wor
 - [x] Image item creation (file picker)
 - [x] Text item creation
 - [x] Drag and drop between tiers and pool
-- [ ] Right-click context menu on items
+- [x] Right-click context menu on items (Rename; Add/Change/Remove image)
+- [x] Right-click context menu on tiers (Rename; Change color)
 - [ ] Image adjust popup (pan + zoom)
-- [ ] Item rename
+- [x] Item rename (inline input via right-click context menu)
 - [x] Save to JSON (with embedded images)
 - [x] Load from JSON (full state restore)
 - [ ] Modals dismissible via Escape + close button

@@ -9,7 +9,11 @@ import {
   moveTierDown,
   addTextItem,
   addImageItem,
+  renameItem,
+  changeItemImage,
+  removeItemImage,
 } from './state.js';
+import { showContextMenu } from './ui/contextMenu.js';
 
 function createItemElement(item: TierItem): HTMLElement {
   const card = document.createElement('div');
@@ -31,7 +35,109 @@ function createItemElement(item: TierItem): HTMLElement {
     card.textContent = item.name;
   }
 
+  card.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    const menuItems: { label: string; onClick: () => void }[] = [
+      { label: 'Rename', onClick: () => startItemRename(card, item) },
+    ];
+    if (item.type === 'image') {
+      menuItems.push({ label: 'Change image', onClick: () => pickNewImage(item.id) });
+      menuItems.push({ label: 'Remove image', onClick: () => { removeItemImage(item.id); renderApp(getState()); } });
+    } else {
+      menuItems.push({ label: 'Add image', onClick: () => pickNewImage(item.id) });
+    }
+    showContextMenu(e.clientX, e.clientY, menuItems);
+  });
+
   return card;
+}
+
+function startItemRename(card: HTMLElement, item: TierItem): void {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = item.name;
+
+  if (item.type === 'image') {
+    // Sit at the bottom overlaying the image, matching .item-name-label style
+    Object.assign(input.style, {
+      position: 'absolute', bottom: '0', left: '0', right: '0', zIndex: '1',
+      width: '100%', fontSize: '0.65rem', textAlign: 'center',
+      padding: '1px 2px', background: 'rgba(0,0,0,0.75)', color: '#fff',
+      border: 'none', outline: '1px solid #aaa',
+    });
+    const label = card.querySelector('.item-name-label');
+    if (label) label.replaceWith(input);
+    else card.appendChild(input);
+  } else {
+    // Dark card background — use light text, transparent background
+    Object.assign(input.style, {
+      width: '100%', fontSize: 'inherit', textAlign: 'center',
+      padding: '2px 4px', background: 'transparent',
+      color: '#f0f0f0', border: 'none', outline: '1px solid #888',
+    });
+    card.textContent = '';
+    card.appendChild(input);
+  }
+
+  input.focus();
+  input.select();
+  let committed = false;
+  const commit = () => {
+    if (committed) return;
+    committed = true;
+    const val = input.value.trim() || item.name;
+    renameItem(item.id, val);
+    renderApp(getState());
+  };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    if (e.key === 'Escape') { committed = true; renderApp(getState()); }
+  });
+}
+
+function startTierRename(label: HTMLElement, labelText: HTMLSpanElement, tier: TierRow): void {
+  if (label.querySelector('input.tier-label-input')) return; // already renaming
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = tier.label;
+  input.classList.add('tier-label-input');
+  label.replaceChild(input, labelText);
+  input.focus();
+  input.select();
+  let committed = false;
+  const commit = () => {
+    if (committed) return;
+    committed = true;
+    const val = input.value.trim() || tier.label;
+    renameTier(tier.id, val);
+    renderApp(getState());
+  };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    if (e.key === 'Escape') { committed = true; renderApp(getState()); }
+  });
+}
+
+function pickNewImage(itemId: string): void {
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files?.[0];
+    if (!file) { fileInput.remove(); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      changeItemImage(itemId, reader.result as string);
+      renderApp(getState());
+      fileInput.remove();
+    };
+    reader.readAsDataURL(file);
+  });
+  fileInput.click();
 }
 
 function createTierRowElement(tier: TierRow, isFirst: boolean, isLast: boolean): HTMLElement {
@@ -60,31 +166,20 @@ function createTierRowElement(tier: TierRow, isFirst: boolean, isLast: boolean):
   labelText.title = 'Click to rename';
   labelText.addEventListener('click', (e) => {
     e.stopPropagation();
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = tier.label;
-    input.classList.add('tier-label-input');
-    label.replaceChild(input, labelText);
-    input.focus();
-    input.select();
-    let committed = false;
-    const commit = () => {
-      if (committed) return;
-      committed = true;
-      const val = input.value.trim() || tier.label;
-      renameTier(tier.id, val);
-      renderApp(getState());
-    };
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); commit(); }
-      if (e.key === 'Escape') { committed = true; renderApp(getState()); }
-    });
+    startTierRename(label, labelText, tier);
   });
 
   label.addEventListener('click', (e) => {
     if (e.target !== label) return;
     colorInput.click();
+  });
+
+  label.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    showContextMenu(e.clientX, e.clientY, [
+      { label: 'Rename', onClick: () => startTierRename(label, labelText, tier) },
+      { label: 'Change color', onClick: () => colorInput.click() },
+    ]);
   });
 
   label.appendChild(colorInput);
