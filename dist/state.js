@@ -65,3 +65,33 @@ export function moveTierDown(id) {
     [tiers[idx], tiers[idx + 1]] = [tiers[idx + 1], tiers[idx]];
     appState = Object.assign(Object.assign({}, appState), { tiers });
 }
+function removeItemFromState(itemId) {
+    for (const tier of appState.tiers) {
+        const idx = tier.items.findIndex(it => it.id === itemId);
+        if (idx !== -1) {
+            const item = tier.items[idx];
+            const tiers = appState.tiers.map(t => t.id === tier.id ? Object.assign(Object.assign({}, t), { items: t.items.filter(it => it.id !== itemId) }) : t);
+            return { item, state: Object.assign(Object.assign({}, appState), { tiers }) };
+        }
+    }
+    const idx = appState.unranked.findIndex(it => it.id === itemId);
+    if (idx !== -1) {
+        const item = appState.unranked[idx];
+        return { item, state: Object.assign(Object.assign({}, appState), { unranked: appState.unranked.filter(it => it.id !== itemId) }) };
+    }
+    return null;
+}
+export function moveItemToTier(itemId, tierId) {
+    const result = removeItemFromState(itemId);
+    if (!result)
+        return;
+    const { item, state } = result;
+    appState = Object.assign(Object.assign({}, state), { tiers: state.tiers.map(t => t.id === tierId ? Object.assign(Object.assign({}, t), { items: [...t.items, item] }) : t) });
+}
+export function moveItemToUnranked(itemId) {
+    const result = removeItemFromState(itemId);
+    if (!result)
+        return;
+    const { item, state } = result;
+    appState = Object.assign(Object.assign({}, state), { unranked: [...state.unranked, item] });
+}

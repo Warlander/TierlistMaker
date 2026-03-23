@@ -3,6 +3,7 @@ function createItemElement(item) {
     const card = document.createElement('div');
     card.classList.add('tier-item');
     card.dataset.itemId = item.id;
+    card.draggable = true;
     if (item.type === 'image' && item.imageDataUrl) {
         const img = document.createElement('img');
         img.src = item.imageDataUrl;

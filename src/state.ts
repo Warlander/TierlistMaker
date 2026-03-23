@@ -88,3 +88,39 @@ export function moveTierDown(id: string): void {
   [tiers[idx], tiers[idx + 1]] = [tiers[idx + 1], tiers[idx]];
   appState = { ...appState, tiers };
 }
+
+function removeItemFromState(itemId: string): { item: TierItem; state: AppState } | null {
+  for (const tier of appState.tiers) {
+    const idx = tier.items.findIndex(it => it.id === itemId);
+    if (idx !== -1) {
+      const item = tier.items[idx];
+      const tiers = appState.tiers.map(t =>
+        t.id === tier.id ? { ...t, items: t.items.filter(it => it.id !== itemId) } : t
+      );
+      return { item, state: { ...appState, tiers } };
+    }
+  }
+  const idx = appState.unranked.findIndex(it => it.id === itemId);
+  if (idx !== -1) {
+    const item = appState.unranked[idx];
+    return { item, state: { ...appState, unranked: appState.unranked.filter(it => it.id !== itemId) } };
+  }
+  return null;
+}
+
+export function moveItemToTier(itemId: string, tierId: string): void {
+  const result = removeItemFromState(itemId);
+  if (!result) return;
+  const { item, state } = result;
+  appState = {
+    ...state,
+    tiers: state.tiers.map(t => t.id === tierId ? { ...t, items: [...t.items, item] } : t),
+  };
+}
+
+export function moveItemToUnranked(itemId: string): void {
+  const result = removeItemFromState(itemId);
+  if (!result) return;
+  const { item, state } = result;
+  appState = { ...state, unranked: [...state.unranked, item] };
+}

@@ -1,9 +1,11 @@
 import { getState, setState } from './state.js';
 import { renderApp } from './render.js';
 import { saveToFile, loadFromFile } from './serialization.js';
+import { initDragAndDrop } from './dragAndDrop.js';
 
 function bootstrap(): void {
   renderApp(getState());
+  initDragAndDrop();
 
   document.getElementById('save-btn')!.addEventListener('click', () => {
     saveToFile(getState());

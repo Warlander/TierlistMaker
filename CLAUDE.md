@@ -93,7 +93,7 @@ src/
   types.ts          # Shared TypeScript interfaces/types
   state.ts          # Central app state and mutation helpers
   render.ts         # DOM rendering / UI updates
-  dnd.ts            # Drag and drop logic
+  dragAndDrop.ts    # Drag and drop logic
   serialization.ts  # Save / load (JSON ↔ app state)
   ui/
     modal.ts        # Generic modal overlay component
@@ -127,13 +127,13 @@ Use this to track completion. Only check off items when the feature is fully wor
 - [x] Project builds with `npm run build` and serves correctly
 - [x] Default S/A/B/C/D/F tiers display on load
 - [x] Tier add / remove / rename / recolor
-- [-] Unranked item pool visible and functional — pool renders, DnD and item creation pending
-- [ ] Image item creation (file picker)
-- [ ] Text item creation
-- [ ] Drag and drop between tiers and pool
+- [x] Unranked item pool visible and functional
+- [x] Image item creation (file picker)
+- [x] Text item creation
+- [x] Drag and drop between tiers and pool
 - [ ] Right-click context menu on items
 - [ ] Image adjust popup (pan + zoom)
 - [ ] Item rename
-- [-] Save to JSON (with embedded images) — basic save works; images embed automatically once image items exist
-- [-] Load from JSON (full state restore) — basic load works; will restore images for free once image items exist
+- [x] Save to JSON (with embedded images)
+- [x] Load from JSON (full state restore)
 - [ ] Modals dismissible via Escape + close button
