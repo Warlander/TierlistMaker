@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tierlist Maker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #1a1a1a;
+      color: #f0f0f0;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.04em;
+      color: #e0e0e0;
+    }
+
+    #tierlist {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 960px;
+    }
+
+    .tier-row {
+      display: flex;
+      align-items: stretch;
+      min-height: 80px;
+      border: 1px solid #333;
+    }
+
+    .tier-label {
+      position: relative;
+      width: 80px;
+      min-width: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .tier-color-input {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .tier-label-text {
+      cursor: text;
+    }
+
+    .tier-label-input {
+      width: 68px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #111;
+      color: #111;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+      padding: 0;
+    }
+
+    .tier-controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px;
+      background: #222;
+      border-left: 1px solid #333;
+    }
+
+    .tier-control-btn {
+      background: #333;
+      border: 1px solid #555;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 2px;
+      line-height: 1.4;
+    }
+
+    .tier-control-btn:hover:not(:disabled) {
+      background: #444;
+      color: #fff;
+    }
+
+    .tier-control-btn:disabled {
+      opacity: 0.3;
+      cursor: default;
+    }
+
+    #add-tier-btn {
+      margin-top: 8px;
+      padding: 6px 14px;
+      background: #333;
+      border: 1px solid #555;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 0.85rem;
+      border-radius: 3px;
+      max-width: 960px;
+      width: 100%;
+    }
+
+    #add-tier-btn:hover {
+      background: #444;
+      color: #fff;
+    }
+
+    .tier-items {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
+      background: #2a2a2a;
+      min-height: 80px;
+    }
+
+    .tier-items.drag-over {
+      background: #3a3a3a;
+      outline: 2px dashed #888;
+      outline-offset: -2px;
+    }
+
+    .tier-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px;
+      height: 72px;
+      background: #3d3d3d;
+      border: 1px solid #555;
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 4px;
+      cursor: grab;
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    #unranked-section {
+      margin-top: 20px;
+      max-width: 960px;
+    }
+
+    #unranked-section h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    #unranked-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 8px;
+      min-height: 80px;
+      background: #222;
+      border: 1px solid #333;
+    }
+
+    #unranked-pool.drag-over {
+      background: #2d2d2d;
+      outline: 2px dashed #888;
+      outline-offset: -2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tierlist Maker</h1>
+  <div id="tierlist"></div>
+  <section id="unranked-section">
+    <h2>Unranked</h2>
+    <div id="unranked-pool"></div>
+  </section>
+  <script type="module" src="index.js"></script>
+</body>
+</html>

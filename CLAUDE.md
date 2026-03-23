@@ -20,10 +20,24 @@ A local, browser-based tierlist maker. Runs entirely client-side with no server 
 
 ```bash
 npm run build        # compiles TypeScript → dist/
-npx serve dist/      # or equivalent static server
+node node_modules/serve/build/main.js dist -p 3333 --no-clipboard   # local static server (serve is a devDependency)
 ```
 
+**Note:** `npx` does not resolve on this machine via Claude Code's preview tool — use `node node_modules/serve/...` directly. The `serve` package is installed as a devDependency.
+
 The entry point is `dist/index.js` (compiled from `src/index.ts`). The main HTML file must be at `dist/index.html`.
+
+---
+
+## TypeScript / Browser Module Note
+
+`tsconfig.json` uses `"module": "ES2020"` (not `commonjs`). This is required because the compiled output is loaded directly in the browser via `<script type="module">` — `require()` does not exist in browsers without a bundler.
+
+All cross-file imports in `.ts` source files must use `.js` extensions:
+```typescript
+import { Foo } from './types.js';   // correct — browser resolves the compiled output
+import { Foo } from './types';       // wrong — breaks at runtime in browser
+```
 
 ---
 
@@ -110,9 +124,9 @@ The following are explicitly out of scope and must not be added:
 
 Use this to track completion. Only check off items when the feature is fully working end-to-end.
 
-- [ ] Project builds with `npm run build` and serves correctly
-- [ ] Default S/A/B/C/D/F tiers display on load
-- [ ] Tier add / remove / rename / recolor
+- [x] Project builds with `npm run build` and serves correctly
+- [x] Default S/A/B/C/D/F tiers display on load
+- [x] Tier add / remove / rename / recolor
 - [ ] Unranked item pool visible and functional
 - [ ] Image item creation (file picker)
 - [ ] Text item creation
