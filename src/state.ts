@@ -1,4 +1,4 @@
-import { AppState, TierRow } from './types.js';
+import { AppState, TierItem, TierRow } from './types.js';
 
 function generateId(): string {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -69,6 +69,16 @@ export function moveTierUp(id: string): void {
   const tiers = [...appState.tiers];
   [tiers[idx - 1], tiers[idx]] = [tiers[idx], tiers[idx - 1]];
   appState = { ...appState, tiers };
+}
+
+export function addTextItem(name: string): void {
+  const item: TierItem = { id: generateId(), type: 'text', name };
+  appState = { ...appState, unranked: [...appState.unranked, item] };
+}
+
+export function addImageItem(name: string, imageDataUrl: string): void {
+  const item: TierItem = { id: generateId(), type: 'image', name, imageDataUrl, imagePanX: 0, imagePanY: 0, imageZoom: 1 };
+  appState = { ...appState, unranked: [...appState.unranked, item] };
 }
 
 export function moveTierDown(id: string): void {

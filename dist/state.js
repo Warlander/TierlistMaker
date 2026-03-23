@@ -49,6 +49,14 @@ export function moveTierUp(id) {
     [tiers[idx - 1], tiers[idx]] = [tiers[idx], tiers[idx - 1]];
     appState = Object.assign(Object.assign({}, appState), { tiers });
 }
+export function addTextItem(name) {
+    const item = { id: generateId(), type: 'text', name };
+    appState = Object.assign(Object.assign({}, appState), { unranked: [...appState.unranked, item] });
+}
+export function addImageItem(name, imageDataUrl) {
+    const item = { id: generateId(), type: 'image', name, imageDataUrl, imagePanX: 0, imagePanY: 0, imageZoom: 1 };
+    appState = Object.assign(Object.assign({}, appState), { unranked: [...appState.unranked, item] });
+}
 export function moveTierDown(id) {
     const idx = appState.tiers.findIndex(t => t.id === id);
     if (idx < 0 || idx >= appState.tiers.length - 1)

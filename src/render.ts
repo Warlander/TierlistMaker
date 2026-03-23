@@ -7,13 +7,29 @@ import {
   recolorTier,
   moveTierUp,
   moveTierDown,
+  addTextItem,
+  addImageItem,
 } from './state.js';
 
 function createItemElement(item: TierItem): HTMLElement {
   const card = document.createElement('div');
   card.classList.add('tier-item');
   card.dataset.itemId = item.id;
-  card.textContent = item.name;
+
+  if (item.type === 'image' && item.imageDataUrl) {
+    const img = document.createElement('img');
+    img.src = item.imageDataUrl;
+    img.alt = item.name;
+    card.appendChild(img);
+
+    const label = document.createElement('span');
+    label.classList.add('item-name-label');
+    label.textContent = item.name;
+    card.appendChild(label);
+  } else {
+    card.textContent = item.name;
+  }
+
   return card;
 }
 
@@ -128,4 +144,88 @@ export function renderApp(state: AppState): void {
   for (const item of state.unranked) {
     unrankedEl.appendChild(createItemElement(item));
   }
+
+  attachItemCreationControls();
+}
+
+function attachItemCreationControls(): void {
+  const existing = document.getElementById('item-creation-controls');
+  if (existing) existing.remove();
+
+  const unrankedSection = document.getElementById('unranked-section')!;
+
+  const controls = document.createElement('div');
+  controls.id = 'item-creation-controls';
+
+  // Hidden file input for images
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.multiple = true;
+  fileInput.style.display = 'none';
+  fileInput.addEventListener('change', () => {
+    const files = Array.from(fileInput.files ?? []);
+    if (files.length === 0) return;
+    let loaded = 0;
+    for (const file of files) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        addImageItem(file.name.replace(/\.[^.]+$/, ''), reader.result as string);
+        loaded++;
+        if (loaded === files.length) renderApp(getState());
+      };
+      reader.readAsDataURL(file);
+    }
+    fileInput.value = '';
+  });
+  controls.appendChild(fileInput);
+
+  const addTextBtn = document.createElement('button');
+  addTextBtn.textContent = '+ Add Text';
+  addTextBtn.addEventListener('click', () => showTextInput(controls, addTextBtn));
+  controls.appendChild(addTextBtn);
+
+  const addImagesBtn = document.createElement('button');
+  addImagesBtn.textContent = '+ Add Images';
+  addImagesBtn.addEventListener('click', () => fileInput.click());
+  controls.appendChild(addImagesBtn);
+
+  unrankedSection.appendChild(controls);
+}
+
+function showTextInput(controls: HTMLElement, addTextBtn: HTMLButtonElement): void {
+  addTextBtn.style.display = 'none';
+
+  const row = document.createElement('div');
+  row.id = 'text-item-input-row';
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.placeholder = 'Item name';
+  input.classList.add('text-item-input');
+  row.appendChild(input);
+
+  const confirm = document.createElement('button');
+  confirm.textContent = 'Add';
+  const cancel = document.createElement('button');
+  cancel.textContent = 'Cancel';
+
+  const commit = () => {
+    const val = input.value.trim();
+    if (val) addTextItem(val);
+    renderApp(getState());
+  };
+  const dismiss = () => renderApp(getState());
+
+  confirm.addEventListener('click', commit);
+  cancel.addEventListener('click', dismiss);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    if (e.key === 'Escape') dismiss();
+  });
+
+  row.appendChild(confirm);
+  row.appendChild(cancel);
+  controls.appendChild(row);
+  input.focus();
 }
