@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "serve": "node node_modules/serve/build/main.js dist -p 3333 --no-clipboard"
   },
   "devDependencies": {
     "serve": "^14.2.6",
