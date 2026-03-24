@@ -105,6 +105,9 @@ export function deleteItem(id) {
     if (result)
         appState = result.state;
 }
+export function clearTierlist() {
+    appState = createInitialState();
+}
 export function moveItemToUnranked(itemId) {
     const result = removeItemFromState(itemId);
     if (!result)

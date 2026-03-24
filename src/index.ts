@@ -1,4 +1,4 @@
-import { getState, setState } from './state.js';
+import { getState, setState, clearTierlist } from './state.js';
 import { renderApp } from './render.js';
 import { saveToFile, loadFromFile } from './serialization.js';
 import { initDragAndDrop } from './dragAndDrop.js';
@@ -18,6 +18,13 @@ function bootstrap(): void {
         renderApp(newState);
       })
       .catch(err => alert(`Load failed: ${err.message}`));
+  });
+
+  document.getElementById('clear-btn')!.addEventListener('click', () => {
+    if (confirm('Clear the entire tierlist? This cannot be undone.')) {
+      clearTierlist();
+      renderApp(getState());
+    }
   });
 }
 
