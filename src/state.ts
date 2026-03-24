@@ -171,9 +171,33 @@ export function clearTierlist(): void {
   appState = createInitialState();
 }
 
+export function moveItemToTierAtIndex(itemId: string, tierId: string, index: number): void {
+  const result = removeItemFromState(itemId);
+  if (!result) return;
+  const { item, state } = result;
+  appState = {
+    ...state,
+    tiers: state.tiers.map(t => {
+      if (t.id !== tierId) return t;
+      const items = [...t.items];
+      items.splice(Math.min(index, items.length), 0, item);
+      return { ...t, items };
+    }),
+  };
+}
+
 export function moveItemToUnranked(itemId: string): void {
   const result = removeItemFromState(itemId);
   if (!result) return;
   const { item, state } = result;
   appState = { ...state, unranked: [...state.unranked, item] };
+}
+
+export function moveItemToUnrankedAtIndex(itemId: string, index: number): void {
+  const result = removeItemFromState(itemId);
+  if (!result) return;
+  const { item, state } = result;
+  const unranked = [...state.unranked];
+  unranked.splice(Math.min(index, unranked.length), 0, item);
+  appState = { ...state, unranked };
 }

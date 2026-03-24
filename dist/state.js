@@ -108,10 +108,32 @@ export function deleteItem(id) {
 export function clearTierlist() {
     appState = createInitialState();
 }
+export function moveItemToTierAtIndex(itemId, tierId, index) {
+    const result = removeItemFromState(itemId);
+    if (!result)
+        return;
+    const { item, state } = result;
+    appState = Object.assign(Object.assign({}, state), { tiers: state.tiers.map(t => {
+            if (t.id !== tierId)
+                return t;
+            const items = [...t.items];
+            items.splice(Math.min(index, items.length), 0, item);
+            return Object.assign(Object.assign({}, t), { items });
+        }) });
+}
 export function moveItemToUnranked(itemId) {
     const result = removeItemFromState(itemId);
     if (!result)
         return;
     const { item, state } = result;
     appState = Object.assign(Object.assign({}, state), { unranked: [...state.unranked, item] });
+}
+export function moveItemToUnrankedAtIndex(itemId, index) {
+    const result = removeItemFromState(itemId);
+    if (!result)
+        return;
+    const { item, state } = result;
+    const unranked = [...state.unranked];
+    unranked.splice(Math.min(index, unranked.length), 0, item);
+    appState = Object.assign(Object.assign({}, state), { unranked });
 }
