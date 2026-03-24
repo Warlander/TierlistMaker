@@ -92,7 +92,10 @@ export function renameItem(id, name) {
     appState = Object.assign(Object.assign({}, appState), { tiers: appState.tiers.map(t => (Object.assign(Object.assign({}, t), { items: t.items.map(it => it.id === id ? Object.assign(Object.assign({}, it), { name }) : it) }))), unranked: appState.unranked.map(it => it.id === id ? Object.assign(Object.assign({}, it), { name }) : it) });
 }
 export function changeItemImage(id, imageDataUrl) {
-    appState = Object.assign(Object.assign({}, appState), { tiers: appState.tiers.map(t => (Object.assign(Object.assign({}, t), { items: t.items.map(it => it.id === id ? Object.assign(Object.assign({}, it), { type: 'image', imageDataUrl }) : it) }))), unranked: appState.unranked.map(it => it.id === id ? Object.assign(Object.assign({}, it), { type: 'image', imageDataUrl }) : it) });
+    appState = Object.assign(Object.assign({}, appState), { tiers: appState.tiers.map(t => (Object.assign(Object.assign({}, t), { items: t.items.map(it => it.id === id ? Object.assign(Object.assign({}, it), { type: 'image', imageDataUrl, imagePanX: 0, imagePanY: 0, imageZoom: 1 }) : it) }))), unranked: appState.unranked.map(it => it.id === id ? Object.assign(Object.assign({}, it), { type: 'image', imageDataUrl, imagePanX: 0, imagePanY: 0, imageZoom: 1 }) : it) });
+}
+export function updateItemPanZoom(id, imagePanX, imagePanY, imageZoom) {
+    appState = Object.assign(Object.assign({}, appState), { tiers: appState.tiers.map(t => (Object.assign(Object.assign({}, t), { items: t.items.map(it => it.id === id ? Object.assign(Object.assign({}, it), { imagePanX, imagePanY, imageZoom }) : it) }))), unranked: appState.unranked.map(it => it.id === id ? Object.assign(Object.assign({}, it), { imagePanX, imagePanY, imageZoom }) : it) });
 }
 export function removeItemImage(id) {
     appState = Object.assign(Object.assign({}, appState), { tiers: appState.tiers.map(t => (Object.assign(Object.assign({}, t), { items: t.items.map(it => it.id === id ? Object.assign(Object.assign({}, it), { type: 'text', imageDataUrl: undefined }) : it) }))), unranked: appState.unranked.map(it => it.id === id ? Object.assign(Object.assign({}, it), { type: 'text', imageDataUrl: undefined }) : it) });

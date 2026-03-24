@@ -12,8 +12,10 @@ import {
   renameItem,
   changeItemImage,
   removeItemImage,
+  updateItemPanZoom,
 } from './state.js';
 import { showContextMenu } from './ui/contextMenu.js';
+import { showImageAdjust } from './ui/imageAdjust.js';
 
 function createItemElement(item: TierItem): HTMLElement {
   const card = document.createElement('div');
@@ -22,10 +24,26 @@ function createItemElement(item: TierItem): HTMLElement {
   card.draggable = true;
 
   if (item.type === 'image' && item.imageDataUrl) {
-    const img = document.createElement('img');
-    img.src = item.imageDataUrl;
-    img.alt = item.name;
-    card.appendChild(img);
+    const CARD_W = 80, CARD_H = 72;
+    const panX = item.imagePanX ?? 0;
+    const panY = item.imagePanY ?? 0;
+    const zoom = item.imageZoom ?? 1;
+    const probe = new Image();
+    const applyBg = () => {
+      const nw = probe.naturalWidth, nh = probe.naturalHeight;
+      if (!nw || !nh) return;
+      const coverScale = Math.max(CARD_W / nw, CARD_H / nh);
+      const displayW = nw * coverScale * zoom;
+      const displayH = nh * coverScale * zoom;
+      const bx = (CARD_W - displayW) / 2 + panX * CARD_W;
+      const by = (CARD_H - displayH) / 2 + panY * CARD_H;
+      card.style.backgroundImage = `url(${item.imageDataUrl})`;
+      card.style.backgroundSize = `${displayW}px ${displayH}px`;
+      card.style.backgroundPosition = `${bx}px ${by}px`;
+    };
+    probe.onload = applyBg;
+    probe.src = item.imageDataUrl;
+    if (probe.complete && probe.naturalWidth > 0) { probe.onload = null; applyBg(); }
 
     const label = document.createElement('span');
     label.classList.add('item-name-label');
@@ -41,6 +59,12 @@ function createItemElement(item: TierItem): HTMLElement {
       { label: 'Rename', onClick: () => startItemRename(card, item) },
     ];
     if (item.type === 'image') {
+      menuItems.push({ label: 'Adjust image', onClick: () => {
+        showImageAdjust(item, (panX, panY, zoom) => {
+          updateItemPanZoom(item.id, panX, panY, zoom);
+          renderApp(getState());
+        });
+      }});
       menuItems.push({ label: 'Change image', onClick: () => pickNewImage(item.id) });
       menuItems.push({ label: 'Remove image', onClick: () => { removeItemImage(item.id); renderApp(getState()); } });
     } else {
@@ -131,13 +155,38 @@ function pickNewImage(itemId: string): void {
     if (!file) { fileInput.remove(); return; }
     const reader = new FileReader();
     reader.onload = () => {
-      changeItemImage(itemId, reader.result as string);
+      const dataUrl = reader.result as string;
+      changeItemImage(itemId, dataUrl);
       renderApp(getState());
       fileInput.remove();
+      checkAndOpenAdjust(itemId, dataUrl);
     };
     reader.readAsDataURL(file);
   });
   fileInput.click();
+}
+
+function checkAndOpenAdjust(itemId: string, dataUrl: string): void {
+  const imgEl = new Image();
+  imgEl.onload = () => {
+    if (imgEl.naturalWidth === imgEl.naturalHeight) return;
+    const state = getState();
+    const item = findItem(state, itemId);
+    if (!item) return;
+    showImageAdjust(item, (panX, panY, zoom) => {
+      updateItemPanZoom(itemId, panX, panY, zoom);
+      renderApp(getState());
+    });
+  };
+  imgEl.src = dataUrl;
+}
+
+function findItem(state: AppState, id: string): TierItem | undefined {
+  for (const tier of state.tiers) {
+    const found = tier.items.find(it => it.id === id);
+    if (found) return found;
+  }
+  return state.unranked.find(it => it.id === id);
 }
 
 function createTierRowElement(tier: TierRow, isFirst: boolean, isLast: boolean): HTMLElement {
@@ -266,9 +315,25 @@ function attachItemCreationControls(): void {
     for (const file of files) {
       const reader = new FileReader();
       reader.onload = () => {
-        addImageItem(file.name.replace(/\.[^.]+$/, ''), reader.result as string);
-        loaded++;
-        if (loaded === files.length) renderApp(getState());
+        const dataUrl = reader.result as string;
+        const name = file.name.replace(/\.[^.]+$/, '');
+        const imgEl = new Image();
+        imgEl.onload = () => {
+          addImageItem(name, dataUrl);
+          loaded++;
+          if (loaded === files.length) renderApp(getState());
+          if (imgEl.naturalWidth !== imgEl.naturalHeight) {
+            const state = getState();
+            const newItem = state.unranked[state.unranked.length - 1];
+            if (newItem) {
+              showImageAdjust(newItem, (panX, panY, zoom) => {
+                updateItemPanZoom(newItem.id, panX, panY, zoom);
+                renderApp(getState());
+              });
+            }
+          }
+        };
+        imgEl.src = dataUrl;
       };
       reader.readAsDataURL(file);
     }

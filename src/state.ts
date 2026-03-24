@@ -134,9 +134,20 @@ export function changeItemImage(id: string, imageDataUrl: string): void {
     ...appState,
     tiers: appState.tiers.map(t => ({
       ...t,
-      items: t.items.map(it => it.id === id ? { ...it, type: 'image' as const, imageDataUrl } : it),
+      items: t.items.map(it => it.id === id ? { ...it, type: 'image' as const, imageDataUrl, imagePanX: 0, imagePanY: 0, imageZoom: 1 } : it),
     })),
-    unranked: appState.unranked.map(it => it.id === id ? { ...it, type: 'image' as const, imageDataUrl } : it),
+    unranked: appState.unranked.map(it => it.id === id ? { ...it, type: 'image' as const, imageDataUrl, imagePanX: 0, imagePanY: 0, imageZoom: 1 } : it),
+  };
+}
+
+export function updateItemPanZoom(id: string, imagePanX: number, imagePanY: number, imageZoom: number): void {
+  appState = {
+    ...appState,
+    tiers: appState.tiers.map(t => ({
+      ...t,
+      items: t.items.map(it => it.id === id ? { ...it, imagePanX, imagePanY, imageZoom } : it),
+    })),
+    unranked: appState.unranked.map(it => it.id === id ? { ...it, imagePanX, imagePanY, imageZoom } : it),
   };
 }
 
