@@ -1,8 +1,12 @@
 import { getState, setState, clearTierlist } from './state.js';
 import { renderApp } from './render.js';
-import { saveToFile, loadFromFile } from './serialization.js';
+import { saveToFile, loadFromFile, loadStateFromLocalStorage } from './serialization.js';
 import { initDragAndDrop } from './dragAndDrop.js';
 function bootstrap() {
+    const saved = loadStateFromLocalStorage();
+    if (saved) {
+        setState(saved);
+    }
     renderApp(getState());
     initDragAndDrop();
     document.getElementById('save-btn').addEventListener('click', () => {

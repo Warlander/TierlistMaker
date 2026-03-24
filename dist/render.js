@@ -1,3 +1,4 @@
+import { saveStateToLocalStorage } from './serialization.js';
 import { getState, addTier, removeTier, renameTier, recolorTier, moveTierUp, moveTierDown, addTextItem, addImageItem, renameItem, changeItemImage, removeItemImage, updateItemPanZoom, deleteItem, } from './state.js';
 import { showContextMenu } from './ui/contextMenu.js';
 import { showImageAdjust } from './ui/imageAdjust.js';
@@ -285,6 +286,7 @@ export function renderApp(state) {
         unrankedEl.appendChild(createItemElement(item));
     }
     attachItemCreationControls();
+    saveStateToLocalStorage(state);
 }
 function attachItemCreationControls() {
     const existing = document.getElementById('item-creation-controls');

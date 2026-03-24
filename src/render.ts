@@ -1,4 +1,5 @@
 import { AppState, TierItem, TierRow } from './types.js';
+import { saveStateToLocalStorage } from './serialization.js';
 import {
   getState,
   addTier,
@@ -298,6 +299,7 @@ export function renderApp(state: AppState): void {
   }
 
   attachItemCreationControls();
+  saveStateToLocalStorage(state);
 }
 
 function attachItemCreationControls(): void {

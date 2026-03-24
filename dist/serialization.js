@@ -1,3 +1,42 @@
+const STORAGE_KEY = 'tierlist-state';
+export function saveStateToLocalStorage(state) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    catch (_a) {
+        showStorageWarning();
+    }
+}
+function showStorageWarning() {
+    if (window.__storageWarnShown)
+        return;
+    window.__storageWarnShown = true;
+    const banner = document.createElement('div');
+    banner.textContent = 'Could not auto-save: browser storage is full. Use Save to keep your work.';
+    Object.assign(banner.style, {
+        position: 'fixed', bottom: '16px', left: '50%', transform: 'translateX(-50%)',
+        background: '#c0392b', color: '#fff', padding: '10px 18px',
+        borderRadius: '6px', zIndex: '9999', fontSize: '14px', cursor: 'pointer',
+        whiteSpace: 'nowrap',
+    });
+    banner.onclick = () => banner.remove();
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 8000);
+}
+export function loadStateFromLocalStorage() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw)
+            return null;
+        const data = JSON.parse(raw);
+        if (!Array.isArray(data.tiers) || !Array.isArray(data.unranked))
+            return null;
+        return data;
+    }
+    catch (_a) {
+        return null;
+    }
+}
 export function saveToFile(state) {
     const payload = {
         version: 1,
