@@ -107,6 +107,20 @@ src/
 
 ---
 
+## Version Management
+
+The current version is defined in `src/version.ts` as the single source of truth. The footer reads it at runtime after `npm run build`.
+
+When releasing a new version:
+1. Update the version string in `src/version.ts`
+2. Add a new entry to `CHANGELOG.md` (move items from `[Unreleased]` to the new version section)
+3. Run `npm run build`
+4. Commit all changes
+5. Create and push an annotated git tag matching the version: `git tag -a vX.Y.Z -m "..."` then `git push --tags`
+6. Update the `[unreleased]` comparison link at the bottom of `CHANGELOG.md` to reference the new tag
+
+---
+
 ## Out of Scope
 
 The following are explicitly out of scope and must not be added:

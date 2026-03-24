@@ -2,6 +2,7 @@ import { getState, setState, clearTierlist } from './state.js';
 import { renderApp, initPasteHandler } from './render.js';
 import { saveToFile, loadFromFile, loadStateFromLocalStorage } from './serialization.js';
 import { initDragAndDrop } from './dragAndDrop.js';
+import { VERSION } from './version.js';
 function bootstrap() {
     const saved = loadStateFromLocalStorage();
     if (saved) {
@@ -10,6 +11,9 @@ function bootstrap() {
     renderApp(getState());
     initDragAndDrop();
     initPasteHandler();
+    const versionEl = document.getElementById('version-string');
+    if (versionEl)
+        versionEl.textContent = `Version ${VERSION}`;
     document.getElementById('save-btn').addEventListener('click', () => {
         saveToFile(getState());
     });

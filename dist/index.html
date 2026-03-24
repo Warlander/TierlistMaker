@@ -387,6 +387,28 @@
     .image-adjust-btn-confirm:hover {
       background: #5a8fff;
     }
+
+    #version-footer {
+      position: fixed;
+      bottom: 12px;
+      right: 16px;
+      text-align: right;
+      font-size: 12px;
+      color: #888;
+      line-height: 1.6;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #version-footer a {
+      color: #4a9eff;
+      text-decoration: none;
+      pointer-events: all;
+    }
+
+    #version-footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -401,6 +423,10 @@
     <h2>Unranked</h2>
     <div id="unranked-pool"></div>
   </section>
+  <div id="version-footer">
+    <a href="https://github.com/Warlander/TierlistMaker/blob/master/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a><br>
+    <span id="version-string">Version</span>
+  </div>
   <script type="module" src="index.js"></script>
 </body>
 </html>
