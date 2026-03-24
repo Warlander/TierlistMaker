@@ -38,7 +38,7 @@ export function showContextMenu(x, y, items) {
             padding: '6px 14px',
             background: 'none',
             border: 'none',
-            color: '#e0e0e0',
+            color: item.danger ? '#e05555' : '#e0e0e0',
             textAlign: 'left',
             cursor: 'pointer',
             fontSize: '14px',

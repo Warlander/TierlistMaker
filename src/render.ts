@@ -13,6 +13,7 @@ import {
   changeItemImage,
   removeItemImage,
   updateItemPanZoom,
+  deleteItem,
 } from './state.js';
 import { showContextMenu } from './ui/contextMenu.js';
 import { showImageAdjust } from './ui/imageAdjust.js';
@@ -55,7 +56,7 @@ function createItemElement(item: TierItem): HTMLElement {
 
   card.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    const menuItems: { label: string; onClick: () => void }[] = [
+    const menuItems: { label: string; onClick: () => void; danger?: boolean }[] = [
       { label: 'Rename', onClick: () => startItemRename(card, item) },
     ];
     if (item.type === 'image') {
@@ -70,6 +71,12 @@ function createItemElement(item: TierItem): HTMLElement {
     } else {
       menuItems.push({ label: 'Add image', onClick: () => pickNewImage(item.id) });
     }
+    menuItems.push({ label: 'Delete item', danger: true, onClick: () => {
+      if (confirm(`Delete "${item.name}"?`)) {
+        deleteItem(item.id);
+        renderApp(getState());
+      }
+    }});
     showContextMenu(e.clientX, e.clientY, menuItems);
   });
 

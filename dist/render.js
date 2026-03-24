@@ -1,4 +1,4 @@
-import { getState, addTier, removeTier, renameTier, recolorTier, moveTierUp, moveTierDown, addTextItem, addImageItem, renameItem, changeItemImage, removeItemImage, updateItemPanZoom, } from './state.js';
+import { getState, addTier, removeTier, renameTier, recolorTier, moveTierUp, moveTierDown, addTextItem, addImageItem, renameItem, changeItemImage, removeItemImage, updateItemPanZoom, deleteItem, } from './state.js';
 import { showContextMenu } from './ui/contextMenu.js';
 import { showImageAdjust } from './ui/imageAdjust.js';
 function createItemElement(item) {
@@ -58,6 +58,12 @@ function createItemElement(item) {
         else {
             menuItems.push({ label: 'Add image', onClick: () => pickNewImage(item.id) });
         }
+        menuItems.push({ label: 'Delete item', danger: true, onClick: () => {
+                if (confirm(`Delete "${item.name}"?`)) {
+                    deleteItem(item.id);
+                    renderApp(getState());
+                }
+            } });
         showContextMenu(e.clientX, e.clientY, menuItems);
     });
     return card;

@@ -1,6 +1,7 @@
 export interface ContextMenuItem {
   label: string;
   onClick: () => void;
+  danger?: boolean;
 }
 
 let activeMenu: HTMLElement | null = null;
@@ -47,7 +48,7 @@ export function showContextMenu(x: number, y: number, items: ContextMenuItem[]):
       padding: '6px 14px',
       background: 'none',
       border: 'none',
-      color: '#e0e0e0',
+      color: item.danger ? '#e05555' : '#e0e0e0',
       textAlign: 'left',
       cursor: 'pointer',
       fontSize: '14px',

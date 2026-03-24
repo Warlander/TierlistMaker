@@ -162,6 +162,11 @@ export function removeItemImage(id: string): void {
   };
 }
 
+export function deleteItem(id: string): void {
+  const result = removeItemFromState(id);
+  if (result) appState = result.state;
+}
+
 export function moveItemToUnranked(itemId: string): void {
   const result = removeItemFromState(itemId);
   if (!result) return;
