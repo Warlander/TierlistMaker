@@ -399,3 +399,44 @@ function showTextInput(controls: HTMLElement, addTextBtn: HTMLButtonElement): vo
   controls.appendChild(row);
   input.focus();
 }
+
+export function initPasteHandler(): void {
+  document.addEventListener('paste', (e: ClipboardEvent) => {
+    const active = document.activeElement;
+    if (active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement) return;
+
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith('image/')) {
+        const file = items[i].getAsFile();
+        if (!file) continue;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = reader.result as string;
+          const imgEl = new Image();
+          imgEl.onload = () => {
+            addImageItem('Pasted image', dataUrl);
+            renderApp(getState());
+            if (imgEl.naturalWidth !== imgEl.naturalHeight) {
+              const state = getState();
+              const newItem = state.unranked[state.unranked.length - 1];
+              if (newItem) {
+                showImageAdjust(newItem, (panX, panY, zoom) => {
+                  updateItemPanZoom(newItem.id, panX, panY, zoom);
+                  renderApp(getState());
+                });
+              }
+            }
+          };
+          imgEl.src = dataUrl;
+        };
+        reader.readAsDataURL(file);
+        e.preventDefault();
+        break;
+      }
+    }
+  });
+}

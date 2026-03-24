@@ -1,5 +1,5 @@
 import { getState, setState, clearTierlist } from './state.js';
-import { renderApp } from './render.js';
+import { renderApp, initPasteHandler } from './render.js';
 import { saveToFile, loadFromFile, loadStateFromLocalStorage } from './serialization.js';
 import { initDragAndDrop } from './dragAndDrop.js';
 function bootstrap() {
@@ -9,6 +9,7 @@ function bootstrap() {
     }
     renderApp(getState());
     initDragAndDrop();
+    initPasteHandler();
     document.getElementById('save-btn').addEventListener('click', () => {
         saveToFile(getState());
     });
