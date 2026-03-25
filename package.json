@@ -1,15 +1,16 @@
 {
   "name": "tierlistmaker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "vite build",
     "serve": "node node_modules/serve/build/main.js dist -p 3333 --no-clipboard"
   },
   "devDependencies": {
     "serve": "^14.2.6",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "vite": "^8.0.2"
   },
   "private": true
 }

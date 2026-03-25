@@ -1,7 +1,5 @@
 import { TierItem } from '../types.js';
-
-const PREVIEW_W = 400;
-const PREVIEW_H = 360;
+import { PREVIEW_W, PREVIEW_H } from '../constants.js';
 
 export function showImageAdjust(
   item: TierItem,

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tierlist Maker</title>
+  <link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+  <h1>Tierlist Maker</h1>
+  <div id="toolbar">
+    <button id="save-btn">Save</button>
+    <button id="load-btn">Load</button>
+    <button id="clear-btn">Clear</button>
+  </div>
+  <div id="tierlist"></div>
+  <section id="unranked-section">
+    <h2>Unranked</h2>
+    <div id="unranked-pool"></div>
+  </section>
+  <div id="version-footer">
+    <a href="https://github.com/Warlander/TierlistMaker/blob/master/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a><br>
+    <span id="version-string">Version</span>
+  </div>
+  <script type="module" src="/src/index.ts"></script>
+</body>
+</html>

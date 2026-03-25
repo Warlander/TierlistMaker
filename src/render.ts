@@ -1,4 +1,5 @@
 import { AppState, TierItem, TierRow } from './types.js';
+import { CARD_W, CARD_H } from './constants.js';
 import { saveStateToLocalStorage } from './serialization.js';
 import {
   getState,
@@ -26,7 +27,6 @@ function createItemElement(item: TierItem): HTMLElement {
   card.draggable = true;
 
   if (item.type === 'image' && item.imageDataUrl) {
-    const CARD_W = 80, CARD_H = 72;
     const panX = item.imagePanX ?? 0;
     const panY = item.imagePanY ?? 0;
     const zoom = item.imageZoom ?? 1;

@@ -11,7 +11,7 @@ A local, browser-based tierlist maker. Runs entirely client-side with no server 
 - **Language**: TypeScript (strict mode)
 - **Runtime**: Browser only — no Node.js runtime logic
 - **Server**: Static file server only (e.g. `npx serve dist/` or equivalent). No API routes, no backend processing.
-- **Build**: `tsc` compiles `src/` → `dist/`. The `dist/` directory is the deployment artifact.
+- **Build**: `vite build` compiles and bundles `src/` → `dist/`. The `dist/` directory is the deployment artifact and is not tracked in git. `tsc` is used for type-checking only (`noEmit: true`).
 - **Dependencies**: Keep minimal. Prefer browser-native APIs. Any UI library must be bundler-friendly or CDN-loadable without a build step beyond `tsc`.
 
 ---
@@ -19,13 +19,13 @@ A local, browser-based tierlist maker. Runs entirely client-side with no server 
 ## Build & Run
 
 ```bash
-npm run build        # compiles TypeScript → dist/
+npm run build        # vite build: compiles and bundles src/ → dist/
 node node_modules/serve/build/main.js dist -p 3333 --no-clipboard   # local static server (serve is a devDependency)
 ```
 
 **Note:** `npx` does not resolve on this machine via Claude Code's preview tool — use `node node_modules/serve/...` directly. The `serve` package is installed as a devDependency.
 
-The entry point is `dist/index.js` (compiled from `src/index.ts`). The main HTML file must be at `dist/index.html`.
+The entry point is `index.html` at the project root, which references `src/index.ts`. Vite handles bundling into `dist/`.
 
 ---
 
@@ -88,18 +88,24 @@ Two types of items exist:
 ## Architecture Guidelines
 
 ```
+index.html          # Entry point (project root) — references src/index.ts and src/styles.css
+vite.config.ts      # Vite config — injects __APP_VERSION__ from package.json at build time
 src/
+  styles.css        # All application styles
   index.ts          # Entry point — bootstraps the app
   types.ts          # Shared TypeScript interfaces/types
+  constants.ts      # Shared dimension constants (card size, preview size)
   state.ts          # Central app state and mutation helpers
   render.ts         # DOM rendering / UI updates
   dragAndDrop.ts    # Drag and drop logic
   serialization.ts  # Save / load (JSON ↔ app state)
+  version.ts        # Version export — reads __APP_VERSION__ injected by Vite
   ui/
-    modal.ts        # Generic modal overlay component
     contextMenu.ts  # Right-click context menu
     imageAdjust.ts  # Image pan/zoom popup
 ```
+
+**Dimension constants**: `CARD_W`, `CARD_H`, `PREVIEW_W`, `PREVIEW_H` are defined in `src/constants.ts` (used in TS calculations) and declared as CSS custom properties in the `:root` block at the top of `styles.css` (used in CSS layout). If you change a dimension, update both files.
 
 - Keep DOM manipulation contained to `render.ts` and `ui/` modules.
 - State mutations go through `state.ts` — never mutate state directly in event handlers.
@@ -109,10 +115,10 @@ src/
 
 ## Version Management
 
-The current version is defined in `src/version.ts` as the single source of truth. The footer reads it at runtime after `npm run build`.
+The version is defined in `package.json` as the single source of truth. Vite injects it as `__APP_VERSION__` at build time; `src/version.ts` re-exports it. The footer reads it at runtime after `npm run build`.
 
 When releasing a new version:
-1. Update the version string in `src/version.ts`
+1. Update the version in `package.json` — `src/version.ts` picks it up automatically at build time
 2. Add a new entry to `CHANGELOG.md` (move items from `[Unreleased]` to the new version section)
 3. Run `npm run build`
 4. Commit all changes
