@@ -22,7 +22,7 @@ TypeScript compiled to ES modules, runs entirely in the browser. No backend, no 
 
 ```bash
 npm run build
-node node_modules/serve/build/main.js dist -p 3333
+npm run preview
 ```
 
 Then open `http://localhost:3333` in your browser.

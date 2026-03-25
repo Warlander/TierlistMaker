@@ -5,10 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "vite build",
-    "serve": "node node_modules/serve/build/main.js dist -p 3333 --no-clipboard"
+    "preview": "vite preview --port 3333"
   },
   "devDependencies": {
-    "serve": "^14.2.6",
     "typescript": "^5.5.3",
     "vite": "^8.0.2"
   },

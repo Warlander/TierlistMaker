@@ -10,7 +10,7 @@ A local, browser-based tierlist maker. Runs entirely client-side with no server 
 
 - **Language**: TypeScript (strict mode)
 - **Runtime**: Browser only — no Node.js runtime logic
-- **Server**: Static file server only (e.g. `npx serve dist/` or equivalent). No API routes, no backend processing.
+- **Server**: Static file server only (`vite preview`). No API routes, no backend processing.
 - **Build**: `vite build` compiles and bundles `src/` → `dist/`. The `dist/` directory is the deployment artifact and is not tracked in git. `tsc` is used for type-checking only (`noEmit: true`).
 - **Dependencies**: Keep minimal. Prefer browser-native APIs. Any UI library must be bundler-friendly or CDN-loadable without a build step beyond `tsc`.
 
@@ -20,10 +20,10 @@ A local, browser-based tierlist maker. Runs entirely client-side with no server 
 
 ```bash
 npm run build        # vite build: compiles and bundles src/ → dist/
-node node_modules/serve/build/main.js dist -p 3333 --no-clipboard   # local static server (serve is a devDependency)
+npm run preview      # vite preview: serves dist/ on port 3333
 ```
 
-**Note:** `npx` does not resolve on this machine via Claude Code's preview tool — use `node node_modules/serve/...` directly. The `serve` package is installed as a devDependency.
+**Note:** `npx` does not resolve on this machine via Claude Code's preview tool — use `node node_modules/vite/bin/vite.js preview --port 3333` directly when needed (e.g. in `.claude/launch.json`).
 
 The entry point is `index.html` at the project root, which references `src/index.ts`. Vite handles bundling into `dist/`.
 
