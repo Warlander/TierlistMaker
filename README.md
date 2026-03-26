@@ -8,7 +8,7 @@ Existing online tierlist tools didn't meet my requirements — particularly the 
 
 ## Features
 
-- **Image & text items** — add images from local disk or plain text entries
+- **Image & text items** — add images from local disk or clipboard, or add plain text entries
 - **Drag and drop** — reorder items within and between tiers
 - **Unranked pool** — holding area for items not yet placed
 - **Single-file save/load** — exports a self-contained JSON with images embedded as base64; restores the full tierlist from that one file
