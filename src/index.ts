@@ -3,6 +3,7 @@ import { renderApp, initPasteHandler } from './render.js';
 import { saveToFile, loadFromFile, loadStateFromLocalStorage } from './serialization.js';
 import { initDragAndDrop } from './dragAndDrop.js';
 import { VERSION } from './version.js';
+import { showExportModal } from './ui/exportImage.js';
 
 function bootstrap(): void {
   const saved = loadStateFromLocalStorage();
@@ -34,6 +35,10 @@ function bootstrap(): void {
       clearTierlist();
       renderApp(getState());
     }
+  });
+
+  document.getElementById('export-img-btn')!.addEventListener('click', () => {
+    showExportModal(getState());
   });
 }
 
