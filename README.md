@@ -2,6 +2,8 @@
 
 A local, browser-based tierlist maker focused on simplicity and full offline ownership.
 
+GitHub Pages version: https://warlander.github.io/TierlistMaker/
+
 ## Why
 
 Existing online tierlist tools didn't meet my requirements — particularly the ability to save everything to a single file and fully restore it later, with no accounts, no cloud, and no data leaving the machine. Simplicity and ease of use were prioritized over feature bloat.

@@ -484,13 +484,12 @@ h1 {
   font-size: 12px;
   color: #888;
   line-height: 1.6;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 #version-footer a {
   color: #4a9eff;
   text-decoration: none;
-  pointer-events: all;
 }
 
 #version-footer a:hover {
