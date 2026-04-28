@@ -3,9 +3,9 @@ import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')) as { version: string };
 
-export default defineConfig({
-  base: '/TierlistMaker/',
+export default defineConfig(({ command }) => ({
+  base: command === 'build' ? '/TierlistMaker/' : '/',
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
-});
+}));

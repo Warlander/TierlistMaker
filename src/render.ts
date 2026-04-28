@@ -81,6 +81,11 @@ function createItemElement(item: TierItem): HTMLElement {
     showContextMenu(e.clientX, e.clientY, menuItems);
   });
 
+  card.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    startItemRename(card, item);
+  });
+
   return card;
 }
 
@@ -266,7 +271,14 @@ function createTierRowElement(tier: TierRow, isFirst: boolean, isLast: boolean):
 
   controls.appendChild(makeBtn('▲', 'Move up', isFirst, () => { moveTierUp(tier.id); renderApp(getState()); }));
   controls.appendChild(makeBtn('▼', 'Move down', isLast, () => { moveTierDown(tier.id); renderApp(getState()); }));
-  controls.appendChild(makeBtn('×', 'Remove tier', false, () => { removeTier(tier.id); renderApp(getState()); }));
+  controls.appendChild(makeBtn('×', 'Remove tier', false, () => {
+    if (tier.items.length > 0) {
+      const noun = tier.items.length === 1 ? 'item' : 'items';
+      if (!confirm(`Remove tier "${tier.label}"? Its ${tier.items.length} ${noun} will be moved to the unranked pool.`)) return;
+    }
+    removeTier(tier.id);
+    renderApp(getState());
+  }));
 
   row.appendChild(label);
   row.appendChild(items);
